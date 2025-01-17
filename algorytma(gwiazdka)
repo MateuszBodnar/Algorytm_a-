@@ -21,7 +21,7 @@ struct punkt {
     punkt* rodzic = 0;
     vector<punkt*> sasiedzi;
 
-    // Metody
+    // Metoda
     double funkcja_f(punkt* cel) {
         return  sqrt(pow(poz_x - cel->poz_x, 2) + pow(poz_y - cel->poz_y, 2));
     }
