@@ -1,0 +1,83 @@
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <vector>
+#include <limits>
+
+using namespace std;
+
+const int poz_x = 0;
+const int poz_y = 19;
+const int cel_x = 19;
+const int cel_y = 0;
+
+struct punkt {
+    // Atrybuty
+    int poz_x = 0;
+    int poz_y = 0;
+    int wartosc_punktu = 0; // wartosc z siatki czy jest 0 czy 5
+    int g = numeric_limits<int>::max();
+    double f = numeric_limits<double>::max();
+    punkt* rodzic = 0;
+    vector<punkt*> sasiedzi;
+
+    // Metody
+    double funkcja_f(punkt* cel) {
+        return  sqrt(pow(poz_x - cel->poz_x, 2) + pow(poz_y - cel->poz_y, 2));
+    }
+};
+
+int main() {
+    int kolumny = 20;
+    int wiersze = 20;
+
+    punkt** Tablica_siatki = new punkt * [wiersze];
+
+    for (int i = 0; i < wiersze; i++) {
+        Tablica_siatki[i] = new punkt[kolumny];
+    }
+
+    ifstream plik("grid.txt");
+
+    for (int i = 0; i < wiersze; i++) {
+        for (int j = 0; j < kolumny; j++) {
+            plik >> Tablica_siatki[i][j].wartosc_punktu;
+            Tablica_siatki[i][j].poz_x = j;
+            Tablica_siatki[i][j].poz_y = i;
+
+            if (j > 0) {
+                Tablica_siatki[i][j].sasiedzi.push_back(&Tablica_siatki[i][j - 1]);
+            }
+
+            if (j < kolumny - 1) {
+                Tablica_siatki[i][j].sasiedzi.push_back(&Tablica_siatki[i][j + 1]);
+            }
+
+            if (i > 0) {
+                Tablica_siatki[i][j].sasiedzi.push_back(&Tablica_siatki[i - 1][j]);
+            }
+
+            if (i < wiersze - 1) {
+                Tablica_siatki[i][j].sasiedzi.push_back(&Tablica_siatki[i + 1][j]);
+            }
+        }
+    }
+
+    plik.close();
+     
+    // Wyświetlenie siatki 20x20 z polami z cyfrą 0 lub z cyfrą 5
+    for (int i = 0; i < wiersze; i++) {
+        for (int j = 0; j < kolumny; j++) {
+            cout << Tablica_siatki[i][j].wartosc_punktu << " ";
+        }
+        cout << endl;
+    }
+
+
+    for (int i = 0; i < wiersze; i++) {
+        delete[] Tablica_siatki[i];
+    }
+    delete[] Tablica_siatki;
+
+    return 0;
+};
